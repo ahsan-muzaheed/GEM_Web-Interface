@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="css/progressBar.css">
+
+
+
+
+
+<div class="container">
+    <ul class="progressbar">
+
+        <% if(pageTitle == 'Landing') {%>
+            
+            <li class="active"><a href='/'>Upload Files</a></li> 
+            <li>Grpah Embedding</li>
+            <li>DownStream ML Task</li>
+            <li>Result</li>
+        
+        <%}%>
+        <% if(pageTitle == 'GraphEmbedding') {%>
+            
+            <li class="active"><a href='/'>Upload Files</a></li> 
+            <li class="active"><a href='/graphEmbedding'>Grpah Embedding</li></a></li>
+            <li>DownStream ML Task</li>
+            <li>Result</li>
+        
+        <%}%>
+        <% if(pageTitle == 'downStream') {%>
+            
+            <li class="active"><a href='/'>Upload Files</a></li> 
+            <li class="active"><a href='/graphEmbedding'>Grpah Embedding</a></li>
+            <li class="active"><a href='/downStreamML'>DownStream ML Task</a></li>
+            <li>Result</li>
+        
+        <%}%>
+
+        <% if(pageTitle == 'result') {%>
+            
+            <li class="active"><a href='/'>Upload Files</a></li> 
+            <li class="active"><a href='/graphEmbedding'>Grpah Embedding</a></li>
+            
+            <li class="active"><a href='/downStreamML'>DownStream ML Task</li>
+            <li class="active"><a href='/result'>Result</a></li>
+        
+        <%}%>
+
+    </ul>
+</div>

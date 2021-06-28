@@ -1,0 +1,41 @@
+<%- include('includes/head.ejs') %>
+
+    </head>
+
+    <body>
+
+        <%- include('includes/navigation.ejs') %>
+            <%- include('includes/progressBar.ejs') %>
+
+                <div class="formHeader">
+                    <p> Upload Files</p>
+                    <hr>
+                </div>
+
+                <form class='formContent' action="/single" method="POST" enctype="multipart/form-data">
+                    <p>Adjacency List .dict</p>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" id="formFile" name="adjList">
+                    </div>
+
+                    <p>Node Feature .csr</p>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" id="formFile" name="nodeFeature">
+                    </div>
+                    <p>Labels .npy</p>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" id="formFile" name="labels">
+                    </div>
+
+                    <button class="btn" type="submit">Submit</button>
+
+
+                </form>
+
+
+    </body>
+
+
+
+
+    <%- include('includes/end.ejs') %>
