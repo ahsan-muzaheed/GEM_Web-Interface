@@ -7,7 +7,7 @@
 <div class="container">
     <ul class="progressbar">
 
-        <% if(pageTitle == 'Landing') {%>
+        <% if(pageTitle == 'Landing' || pageTitle == 'uploadResult') {%>
             
             <li class="active"><a href='/'>Upload Files</a></li> 
             <li>Grpah Embedding</li>
@@ -15,6 +15,7 @@
             <li>Result</li>
         
         <%}%>
+ 
         <% if(pageTitle == 'GraphEmbedding') {%>
             
             <li class="active"><a href='/'>Upload Files</a></li> 

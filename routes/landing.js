@@ -18,7 +18,7 @@ router.get('/', formController.getLandingPage);
 
 router.post('/single', upload.fields([{name:'adjList'}, {name:'nodeFeature'}, {name:'labels'}]), (req, res) => {
 
-    
+
     
     // Call python and start processing the read files
     if(req.files.adjList || req.files.nodeFeature || req.files.labels){
@@ -47,7 +47,7 @@ router.post('/single', upload.fields([{name:'adjList'}, {name:'nodeFeature'}, {n
             if(length >= 1){
                 console.log(length);
             }
-            res.redirect('/graphEmbedding');
+            res.redirect('/uploadResult');
         });
 
         
