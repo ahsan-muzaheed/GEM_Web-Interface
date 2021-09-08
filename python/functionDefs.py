@@ -70,7 +70,7 @@ adjacency_list_dict = pickle_read(os.path.join(CORA_PATH, "adjList.dict"))
 node_features_csr = pickle_read(os.path.join(CORA_PATH, "nodeFeature.csr"))
 # shape = (N, 1)
 node_labels_npy = pickle_read(os.path.join(CORA_PATH, "labels.npy"))
-
+# print(type(node_labels_npy))
 # Normalize the features (helps with training)
 # node_features_csr = normalize_features_sparse(node_features_csr)
 
