@@ -4,6 +4,7 @@ import os
 import numpy as np
 from sklearn.manifold import spectral_embedding
 import sys
+import labelEncoder
 
 # All Cora data is stored as pickle
 def pickle_read(path):
@@ -33,8 +34,14 @@ def isolatedNodeDetector(adjacecny):
 
 dir_path = os.getcwd()
 file_path = dir_path + "/python/results/adjmatrix.npy"
+DATA_DIR_PATH = os.path.join(os.getcwd())
+savePath = os.path.join(DATA_DIR_PATH, "python/results")
+np.set_printoptions(suppress=True)
 
 adjacency = pickle_read(file_path)
+
+# transpose = labels.reshape(-1, 1)
+
 
 # file_path = dir_path + "/node_labels.npy"
 # file_path = dir_path + "/node_features.csr"
@@ -43,5 +50,14 @@ adjacency = pickle_read(file_path)
 # data = testData
 data = pickle_read(file_path)
 
-spectral = spectral_embedding(adjacency, n_components=int(sys.argv[1]))
-print(spectral)
+
+dimension = int((sys.argv[1]))
+spectral = spectral_embedding(adjacency, n_components=dimension)
+print("Dimensionality: ", dimension)
+# print(spectral)
+
+dataSet = labelEncoder.labelEncoder(spectral, dimension)
+
+print(dataSet)
+
+pickle_save(savePath + "/dataSet.npy", dataSet)

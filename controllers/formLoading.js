@@ -51,6 +51,7 @@ exports.embeddingHandler = (req, res, next) => {
   console.log(req.body.embeddingMethod);
   console.log(req.body.dimension);
 
+  // Laplacian
   if (req.body.embeddingMethod == "Laplacian") {
     const { spawn } = require("child_process");
     const dimension = req.body.dimension;
@@ -66,13 +67,16 @@ exports.embeddingHandler = (req, res, next) => {
 
     ls.on("close", (code) => {
       console.log("Laplacian called");
-      //console.log(`child process exited with code ${code}`);
+      //ls.stdin.pause();
+      //ls.kill();
 
-      //res.redirect('/uploadResult');
+      console.log(`graph embedding child process exited with code ${code}`);
+      //process.exit();
+      res.redirect("/downStreamML");
     });
   }
 
-  res.redirect("/downStreamML");
+  //res.redirect("/downStreamML");
 };
 
 exports.getDownStreamMLPage = (req, res, next) => {
@@ -80,6 +84,31 @@ exports.getDownStreamMLPage = (req, res, next) => {
     pageTitle: "downStream",
   });
 };
+
+exports.downstreamHandler = (req, res, next) => {
+  const obj = JSON.parse(JSON.stringify(req.body));
+  console.log("Machine Learning Option: ", obj);
+  let data = JSON.stringify(obj);
+  // fs.writeFileSync(
+  //   path.join(__dirname, "..", "python", "results", "downStreamMLinfo.json"),
+  //   data
+  // );
+  // Call python here
+  const { spawn } = require("child_process");
+  const cp = spawn("python3", ["./python/downStreamML.py", data]);
+  cp.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
+  cp.stderr.on("data", (data) => {
+    console.error(`stderr: ${data}`);
+  });
+  cp.on("close", (code) => {
+    console.log("downstream finished");
+    console.log(`downstream child process exited with code ${code}`);
+  });
+  res.redirect("/result");
+};
+
 exports.getResultPage = (req, res, next) => {
   res.render("result", {
     pageTitle: "result",

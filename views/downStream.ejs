@@ -1,11 +1,295 @@
 <%- include('includes/head.ejs') %>
-    
+
 </head>
 <body>
 
     <%- include('includes/navigation.ejs') %>
     <%- include('includes/progressBar.ejs') %>
-    <p>This is downStream ML Page</p>
+    <div class="formHeader">
+        <p> Downstream Machine Learning Task</p>
+        <hr>
+        <h5>Configure the requirements for your downstream machine learning tasks</h5>
+    </div>
+
+
+    <form class="formContent" action="/downstreamHandler" method="post">
+
+        
+            <button type="button" id="supershow" style="margin-right:2rem; margin-bottom:2rem;"  class="btn" >Supervised</button>
+            <button type="button" id="unsupershow" style="margin-left:2rem; margin-bottom:2rem;" class="btn">Unsupervised</button>
+
+        <!--Supervised Content here-->
+            <div id="superContent" style="display:none"> 
+                
+
+
+                <div style="width: 40rem">
+                
+                    <div class="row">
+                        <div class="col">
+    
+                            <div class="form-check form-switch">
+                                <label for="flexSwitchCheckDefault">Data Split</label>
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="dataSplit">        
+                            </div>
+                        </div>
+                        
+                        
+                            <div class="col" id="testDataDropdown" style="display:none"> 
+                                <label for="splitMethod">Split Method</label>
+                                <select  class="form-select" id="splitMethod" aria-label="Default select example"  name="splitMethod">
+                                    <option selected>Choose...</option>
+                                    <option value="holdout">Hold-out(Train:66 Test:34)</option>
+                                    <option value="kfold">K-Fold Validation</option>
+                                    <option value="random">Random Sampling (Your Own Ratio)</option>
+                                </select> 
+                            </div>
+
+                            <div class="col" id="kfoldInput" style="display:none">
+                                <label for="kvalue">K-Value</label>
+                                <input class="form-control" id="kvalue" type="text" name="kfoldValue">
+                            </div>
+
+                            <div class="col" id="randomRatio" style="display:none">
+
+                                <div class="range">
+                                    <label for="customRange1"></label>
+                                    <input type="range" class="form-range" id="customRange1" step="1%" min="1" max="100%" value="70" name="range" />
+                                    Train: <span id="rangeTrainVal">70%</span> <br> 
+                                    Test : <span id="rangeTestVal">30%</span>
+                                </div>
+                            </div>
+                            <div class="col" id="numOfTrial"style="display:none" >
+                                <label for="numOfTrial">Number of Trial:</label>
+                                <input class="form-control"  type="text" name="numOfTrial" value=1>
+                            </div>
+                        
+                    </div>
+                    <hr>
+
+                    
+        
+                        <label for="dropdownClassification">Classification Type</label>
+                        <select  class="form-select" id="dropdownClassification" aria-label="Default select example"  name="embeddingMethod">
+                            <option selected>Choose...</option>
+                            <option value="nodeclassfication">Node Classification</option>
+                            <option value="graphClassification">Graph Classification</option>
+                        </select>
+                    
+                    
+                    <!--Classifier Choice-->
+                    <hr>
+                    <div style="width: 40rem;">
+                    
+                        <div class="row">
+                            <div class="col">
+
+                                <label for="dropdownClassifier">Choose your Classifier</label>
+                                <select  class="form-select" id="dropdownClassifier" aria-label="Default select example" name="classifier">
+                                    <option selected>Choose...</option>
+                                    <option value="logisticRegression">Logistic Regression</option>
+                                    <option value="SVM">SVM</option>
+                                    <option value="KNN">KNN</option>
+                                    <option value="decisionTree">Decision Tree</option>
+                                </select>
+
+                            </div>
+                        
+                            <!--Logistic Regression Parameters-->
+                            <div class="col" style="display: none" id="logisticRegParam">
+                                <label for="logisticSolver">Solver</label>
+                                <select class="form-select" style="width: 10rem" name="solver" id="logisticSolver" >
+                                    <option selected>lbfgs</option>
+                                    <option value="newton-cg">newton-cg</option>
+                                    <option value="liblinear">liblinear</option>
+                                    <option value="sag">sag</option>
+                                    <option value="saga">saga</option>
+                                </select>
+
+                                <label for="">C :float, default=1.0</label>
+                                <input class="form-control" style="width: 10rem" type="text" id="cost" value=1.0 name="Cvalforlogistic">
+
+                            </div>
+
+                            <!-- SVM Parameters-->
+                            <div class="col" style="display:none" id="SVMParam">
+                                <label for="">C :float, default=1.0</label>
+                                <input class="form-control" style="width: 10rem" type="text" id="" name="CvalForSVM" value=1.0 >
+
+                                <label for="">Gamma</label>
+                                <select class="form-select" name="gammaForSVM" id="gammaForSVM">
+                                    <option selected value="scale">scale</option>
+                                    <option value="auto">auto</option>
+                                </select>
+                                <label for="">kernel</label>
+                                <select class="form-select" name="kernelForSVM" id="kernelForSVM">
+                                    <option selected value="rbf">rbf</option>
+                                    <option value="linear">linear</option>
+                                    <option value="poly">poly</option>
+                                    <option value="sigmoid">sigmoid</option>
+                                    <option value="precomputed">precomputed</option>
+                                </select>
+                            </div>
+
+                            <!-- KNN Parameters-->
+                            <div class="col" style="display:none" id="KNNParam">
+                                <label for="">n_neighbors default=5</label>
+                                <input class="form-control" style="width: 10rem" type="text" id="numOfneighbors" name="nForKNN" value=5 >
+                                
+                                <label for="">p value for distance</label>
+                                <select class="form-select" id="KNNdistance" name="disForKNN">
+                                    <option selected value=2>2 (Euclidean)</option>
+                                    <option value=1>1 (Manhattan)</option>
+                                    <option >arbitrary (Minkowski)</option>
+                                </select>
+                                <div class="col" style="display:none" id="minkowski">
+
+                                    <label for="minkowski">p for Minkowski</label>
+                                    <input class="form-control" style="width: 10rem" type="text" id="minkowski" name="pvalForMinko">
+                                </div>
+                            </div>
+
+                            <!-- DecisionTree Parameters-->
+                            <div class="col" style="display:none" id="decisionTreeParam">
+                                <label for="">criterion</label>
+                                <select class="form-select" name="critForTree" id="DTcriterion">
+                                    <option selected value="gini">gini</option>
+                                    <option value="entropy">entropy</option>
+                                </select>
+
+                                <label for="">max_features default=None</label>
+                                <select class="form-select" name="maxFeatForTree" id="DTmaxfeatures">
+                                    <option selected >None</option>
+                                    <option value="auto">auto</option>
+                                    <option value="sqrt">sqrt</option>
+                                    <option value="log2">log2</option>
+                                </select>
+
+                                <label for="">max_depth default=None</label>
+                                <input class="form-control"  name="maxDepthForTree" style="width:10rem" type="text" id="numOfneighbors">
+                            </div>
+                            
+
+                        </div> 
+                    </div>
+                    
+
+                </div>
+              
+                
+                </div>
+
+
+            </div>
+
+
+            <!--Unsupervised Content here-->
+            <div id="unsuperContent" style="display:none"> <p>Here is unsupervised content!</p> </div>
+
+
+
+
+
+
+
+            <button id="btn" class="btn" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button>
+    </form>
+
+
+    
+
+    <script>
+        $(document).ready(function(){
+            $("#supershow").click(function(){
+                $("#superContent").show();
+                $("#unsuperContent").hide();
+            });
+            $("#unsupershow").click(function(){
+                $("#unsuperContent").show();
+                $("#superContent").hide();
+            });
+
+            $("#flexSwitchCheckDefault").click( function() {
+
+                $("#testDataDropdown").hide();
+                $("#kfoldInput").hide();
+                $("#randomRatio").hide();
+                $("#numOfTrial").hide();
+                if($("#flexSwitchCheckDefault").is(":checked")){
+                    $("#testDataDropdown").show();
+                }
+
+            });
+
+            $("#dropdownClassifier").change( function() {
+                let selectedVal = $("#dropdownClassifier option:selected").text();
+                $("#logisticRegParam").hide();
+                $("#SVMParam").hide();
+                $("#KNNParam").hide();
+                $("#decisionTreeParam").hide();
+
+                if(selectedVal === "Logistic Regression"){
+                    $("#logisticRegParam").show();
+                }
+                else if(selectedVal === "SVM"){
+                    $("#SVMParam").show();
+
+                }
+                else if(selectedVal === "Decision Tree"){
+                    $("#decisionTreeParam").show();
+
+                }
+                else{ //KNN
+                    $("#KNNParam").show();
+                }
+            });
+            
+            $("#KNNdistance").change(function(){
+                let selectedVal = $("#KNNdistance option:selected").text();
+                if(selectedVal === "arbitrary (Minkowski)"){
+                    $("#minkowski").show();
+                }
+            });
+
+            
+
+            $("#splitMethod").change(function(){
+                let selectedVal = $("#splitMethod option:selected").text();
+                console.log(selectedVal);
+                $("#kfoldInput").hide();
+                $("#randomRatio").hide();
+                $("#numOfTrial").hide();
+                
+                if(selectedVal === "K-Fold Validation"){
+                    $("#kfoldInput").show();
+
+                }
+                else if(selectedVal === "Random Sampling (Your Own Ratio)"){
+
+                    $("#randomRatio").show();
+                    $("#numOfTrial").show();
+                }
+
+
+            });
+
+            $("#customRange1").mousemove( function() {
+                let train = $(this).val();
+                let test =  100 - $(this).val();
+                $("#rangeTrainVal").text(train  + "%");
+                $("#rangeTestVal").text(test + "%")  ;
+            });
+
+            
+            
+        });
+
+        
+
+
+    
+    </script>
+    
 </body>
 
 
