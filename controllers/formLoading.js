@@ -1,7 +1,7 @@
 const { response } = require("express");
 const fs = require("fs");
 const path = require("path");
-
+const fileInput = require("./fileRead");
 // Load basic GET pages
 exports.getLandingPage = (req, res, next) => {
   console.log("Landing called!");
@@ -26,10 +26,13 @@ exports.getUploadResultPage = (req, res, next) => {
   returnedData = fs.readFileSync(targetPath, "utf8");
 
   console.log(returnedData);
-
+  resultData =
+    '<div id="resultcontent"><pre>' +
+    returnedData.replace("/\n/g", "<br/>") +
+    "</pre>";
   res.render("uploadResult", {
     pageTitle: "uploadResult",
-    pageData: returnedData,
+    pageData: resultData,
   });
 };
 
@@ -105,12 +108,29 @@ exports.downstreamHandler = (req, res, next) => {
   cp.on("close", (code) => {
     console.log("downstream finished");
     console.log(`downstream child process exited with code ${code}`);
+    res.redirect("/result");
   });
-  res.redirect("/result");
 };
 
 exports.getResultPage = (req, res, next) => {
-  res.render("result", {
-    pageTitle: "result",
+  console.log("result page called");
+
+  let resultData = fileInput.readResultTxt("result", ".txt");
+  let resultVal = "";
+  resultData.then((result) => {
+    let htmlResult =
+      '<div id="resultcontent"><pre>' +
+      result.toString("utf8").replace(/\n/g, "<br />") +
+      "</pre>";
+    console.log(result.toString("utf8"));
+    resultVal = htmlResult;
+    res.render("result", {
+      pageTitle: "result",
+      result: resultVal,
+    });
   });
+  // res.render("result", {
+  //   pageTitle: "result",
+  //   result: resultVal,
+  // });
 };
