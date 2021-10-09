@@ -12,16 +12,19 @@
     </div>
 
 
-    <form class="formContent" action="/downstreamHandler" method="post">
+    
 
         
-            <button type="button" id="supershow" style="margin-right:2rem; margin-bottom:2rem;"  class="btn" >Supervised</button>
-            <button type="button" id="unsupershow" style="margin-left:2rem; margin-bottom:2rem;" class="btn">Unsupervised</button>
-
+        <button type="button" id="supershow" style="margin-left:15rem; "  class="btn" >Supervised</button>
+        <button type="button" id="unsupershow" style="margin-left:10rem; " class="btn">Unsupervised</button>
+        
         <!--Supervised Content here-->
+        <form class="formContent supervised" action="/downstreamHandler" method="post" style="display:none">
             <div id="superContent" style="display:none"> 
-                
-
+             
+                <div style="display:none" class="learningType">
+                    <input type="hidden" name="learningType" value="supervised">
+                </div>
 
                 <div style="width: 40rem">
                 
@@ -71,8 +74,8 @@
         
                         <label for="dropdownClassification">Classification Type</label>
                         <select  class="form-select" id="dropdownClassification" aria-label="Default select example"  name="embeddingMethod">
-                            <option selected>Choose...</option>
-                            <option value="nodeclassfication">Node Classification</option>
+                            
+                            <option selected value="nodeclassfication">Node Classification</option>
                             <option value="graphClassification">Graph Classification</option>
                         </select>
                     
@@ -172,19 +175,147 @@
 
                         </div> 
                     </div>
-                    
+                    <hr>
+
+                    <!--accuracy, precision, recall, F1, Area Under Curve (AUC), and visualize the ROC, confusion matrix, ALL-->
+                    <div class="form-check">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input all" type="checkbox" name="metric" id="inlineCheckbox0" value="option1">
+                            <label class="form-check-label" for="inlineCheckbox0">All</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox1" value="accuracy">
+                            <label class="form-check-label" for="inlineCheckbox1">Accuracy</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox2" value="precision">
+                            <label class="form-check-label" for="inlineCheckbox2">Precision</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox3" value="recall">
+                            <label class="form-check-label" for="inlineCheckbox3">Recall</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox4" value="f1_score">
+                            <label class="form-check-label" for="inlineCheckbox4">F1 Score</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox5" value="rocauc">
+                            <label class="form-check-label" for="inlineCheckbox5">ROC AUC Curve</label>
+                        </div>
+                        <div class="col" id="pos_labelValue" style="display:none">
+                            <label for="poslabel">pos_label</label>
+                            <input class="form-control" id="poslabel" type="text" name="poslabelVal">
+                        </div>
+                    </div>
 
                 </div>
               
                 
-                </div>
+               
+                
 
-
+                
+                <button id="btn" class="btn supervised" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button>
             </div>
+            
+        </form>    
+
 
 
             <!--Unsupervised Content here-->
-            <div id="unsuperContent" style="display:none"> <p>Here is unsupervised content!</p> </div>
+        <form class="formContent unsupervised" action="/downstreamHandler" method="post" style="display:none">
+            <div id="unsuperContent" style="display:none" > 
+            
+                <div style="display:none" class="learningType">
+                    <input type="hidden" name="learningType" value="unsupervised">
+                </div>
+
+                <div style="width:40rem">
+                
+                    <div class = "row">
+                        <div class="col">
+    
+                            <label for="unsupervisedTaskType">Task Type: </label>
+                            <select  class="form-select" id="unsupervisedTaskType" aria-label="Default select example" name="unsupervisedTaskType">
+                                <option selected>Choose...</option>
+                                <option value="K-Means">K-Means</option>
+                                <option value="DBSCAN">DBSCAN</option>
+                                <option value="Agglomerative">Agglomerative</option>
+                            </select>
+    
+                        </div>
+    
+                        <!-- Kmenas clustering parameter-->
+                        <div class="col kmeansParam" style="display:none" >
+    
+                            <label for="n_clusters">n_clusters</label>
+                            <input class="form-control" style="width:10rem" type="text" id="n_clusters" name="n_clustersForKmean" value=8 >
+                            
+                            <label for="n_init">n_init</label>
+                            <input class="form-control" style="width:10rem" type="text" id="n_init" name="n_init" value=10 >
+
+                            <label for="init">init</label>
+                            <select  class="form-select" id="unsupervisedTaskType" aria-label="Default select example" name="init">
+                                <option value="k-means++"selected>k-means++</option>
+                                <option value="random">random</option>
+                            </select>
+                            
+                            
+                        </div>
+                        <div class="col DBSCAN" style="display: none">
+                            <label for="eps">eps(float)</label>
+                            <input class="form-control" style="width:10rem" type="text" id="eps" name="eps" value=0.5 >
+                            <label for="min_samples">min_samples(int)</label>
+                            <input class="form-control" style="width:10rem" type="text" id="min_samples" name="min_samples" value=5 >
+
+                        </div>
+
+                        <div class="col Agglomerative" style="display: none">
+                            <label for="eps">n_clusters(int)</label>
+                            <input class="form-control" style="width:10rem" type="text" id="n_clusters" name="n_clusters" value=2 >
+
+                            <label for="linkage">linkage</label>
+                            <select  class="form-select" id="linkage" aria-label="Default select example" name="linkage">
+                                <option value="ward"selected>ward</option>
+                                <option value="complete">complete</option>
+                                <option value="average">average</option>
+                                <option value="single">single</option>
+                            </select>
+                        </div>
+                        
+
+
+                       
+                    </div>
+                </div>
+                
+                <hr>
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input all" type="checkbox" name="metric" id="inlineCheckbox0">
+                        <label class="form-check-label" for="inlineCheckbox0">All</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox1" value="RandIndex">
+                        <label class="form-check-label" for="inlineCheckbox1">Rand Index</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox2" value="NMI">
+                        <label class="form-check-label" for="inlineCheckbox2">NMI (Normalized Mutual Information)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input check" type="checkbox" name="metric" id="inlineCheckbox2" value="Silhouette">
+                        <label class="form-check-label" for="inlineCheckbox2">Silhouette Coefficient</label>
+                    </div>
+                </div>
+
+            
+            
+                <button id="btn" class="btn unsupervised" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button>
+            </div>
+            
+        </form>
 
 
 
@@ -192,21 +323,29 @@
 
 
 
-            <button id="btn" class="btn" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button>
-    </form>
+            <!-- <button id="btn" class="btn" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button> -->
+    
 
 
     
 
     <script>
         $(document).ready(function(){
+
             $("#supershow").click(function(){
+                $("form.supervised").show();
+
                 $("#superContent").show();
+                
                 $("#unsuperContent").hide();
+                $("form.unsupervised").hide();
             });
             $("#unsupershow").click(function(){
+                $("form.unsupervised").show();
                 $("#unsuperContent").show();
+                
                 $("#superContent").hide();
+                $("form.supervised").hide();
             });
 
             $("#flexSwitchCheckDefault").click( function() {
@@ -282,12 +421,55 @@
 
             
             
-        });
+            $(".form-check-input.all").click( function() {
+                
+                //$('input:checkbox').not(this).prop('checked', this.checked);
+                $(".form-check-input.check").not(this).prop("checked", this.checked)
+            
+            })
+            $("#inlineCheckbox5").click(function(){
+                if(this.checked){
+                    $("#pos_labelValue").show()
+                }
+                else{
+                    $("#pos_labelValue").hide()
+                }
+            })
 
+            $("button.supervised").click(function(){
+                $("form.formContent.supervised").submit();
+            })
+            $("button.unsupervised").click(function(){
+                $("form.formContent.unsupervised").submit();
+            })
+
+
+
+            // Unsupervised options
+            $("#unsupervisedTaskType").change(function(){
+                let selectedVal = $("#unsupervisedTaskType option:selected").text();
+                $(".kmeansParam").hide();
+                $(".DBSCAN").hide();
+                $(".Agglomerative").hide();
+
+                if(selectedVal == "K-Means"){
+                    $(".col.kmeansParam").show();
+                }
+                else if(selectedVal == "DBSCAN"){
+                    $(".DBSCAN").show();
+                }
+                else if(selectedVal == "Agglomerative"){
+                    $(".Agglomerative").show();
+                }
+            })
+
+
+        
+    })
         
 
 
-    
+        
     </script>
     
 </body>

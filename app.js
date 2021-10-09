@@ -1,3 +1,7 @@
+// GEM Web-Application
+// Written by Jun Yong Lee
+// NMSU
+
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");

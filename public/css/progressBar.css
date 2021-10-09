@@ -20,6 +20,10 @@
   color: rgb(20, 112, 116);
   background-color: rgb(20, 112, 116);
 }
+.formHeader img {
+  margin-top: 2rem;
+  width: 100%;
+}
 
 .formContent {
   padding: 3rem;
