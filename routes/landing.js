@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const fs = require("fs");
 const formController = require("../controllers/formLoading");
 
 const upload = require("../util/multer");
@@ -27,6 +27,7 @@ router.post(
       //edgeListHandler.run();
       const { spawn } = require("child_process");
       const ls = spawn("python3", ["./python/functionDefs.py"]);
+      let isMultiClass = false;
       ls.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
       });
@@ -45,6 +46,7 @@ router.post(
         if (length >= 1) {
           console.log(length);
         }
+
         res.redirect("/uploadResult");
       });
     }

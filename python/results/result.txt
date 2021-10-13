@@ -4,6 +4,6 @@ Output from downstrem ML
 Method: K-Means
 ------------------------------------
 Metric
-Rand Score: 0.22363760675179345
-NMI Score: 0.015530357102367151
-Silhouette Score: 0.941542071055747
+Rand Score: 0.5694083777547023
+NMI Score: 0.02026959432903604
+Silhouette Score: 0.9417118935558852

@@ -188,7 +188,9 @@ def randIndex(y_true, y_pred):
 
 
 def NMI(y_true, y_pred):
-    return adjusted_mutual_info_score(y_true, y_pred)
+    print(y_true[:300])
+    print(y_pred[:300])
+    return normalized_mutual_info_score(y_true, y_pred)
 
 
 def silhouetteScore(X, y_pred):
