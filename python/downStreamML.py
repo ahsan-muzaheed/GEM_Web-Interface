@@ -394,26 +394,31 @@ def unsupervisedHandler(dataSet, jsonDict, metric):
         eps = jsonDict["eps"]
         minSamples = jsonDict["min_samples"]
         clustering = DBSCAN(eps=float(eps), min_samples=int(minSamples)).fit(X)
+        y_pred = clustering.labels_
+
     else:  # Agglomerative
         cluster = jsonDict["n_clusters"]
         linkage = jsonDict["linkage"]
         clustering = AgglomerativeClustering(
             n_clusters=int(cluster), linkage=linkage
         ).fit(X)
-
+        y_pred = clustering.labels_
     # Metric Handling
     stringResult.append("------------------------------------")
     stringResult.append("Metric")
 
     if "RandIndex" in metric:
+
         score = randIndex(y_true.ravel(), y_pred)
         stringResult.append("Rand Score: " + str(score))
 
     if "NMI" in metric:
+
         score = NMI(y_true.ravel(), y_pred)
         stringResult.append("NMI Score: " + str(score))
     if "Silhouette" in metric:
         score = silhouetteScore(X, y_pred)
+
         stringResult.append("Silhouette Score: " + str(score))
 
     txtAppender(stringResult)

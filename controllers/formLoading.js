@@ -14,7 +14,7 @@ exports.getLandingPage = (req, res, next) => {
 exports.getUploadResultPage = (req, res, next) => {
   console.log("uploadResult called!");
   let returnedData = "";
-
+  let isMultiClass = false;
   // Read matrix in txt file
   const targetPath = path.join(
     __dirname,
@@ -24,6 +24,7 @@ exports.getUploadResultPage = (req, res, next) => {
     "num_of_nodes.txt"
   );
   returnedData = fs.readFileSync(targetPath, "utf8");
+  numOfClass = returnedData.split(" ")[1];
 
   console.log(returnedData);
   resultData =
@@ -33,7 +34,32 @@ exports.getUploadResultPage = (req, res, next) => {
   res.render("uploadResult", {
     pageTitle: "uploadResult",
     pageData: resultData,
+    numOfClass: numOfClass,
   });
+};
+
+exports.postUploadResultPage = (req, res, next) => {
+  console.log(req.body);
+  let posVal = req.body["posVal"];
+  if (req.body["binarize"] === "yes") {
+    // binarize label.npy
+    const { spawn } = require("child_process");
+    const ls = spawn("python3", ["python/binarize.py", posVal]);
+
+    ls.stdout.on("data", (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    ls.stderr.on("data", (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    ls.on("close", (code) => {
+      res.redirect("graphEmbedding");
+    });
+  } else {
+    res.redirect("graphEmbedding");
+  }
 };
 
 exports.getLoadingPage = (req, res, next) => {
