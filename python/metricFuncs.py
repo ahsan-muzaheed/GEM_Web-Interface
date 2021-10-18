@@ -14,6 +14,7 @@ from txtHandler import *
 from sklearn.metrics.cluster import normalized_mutual_info_score
 from sklearn.metrics import silhouette_samples, silhouette_score
 
+
 # https://stackoverflow.com/questions/25009284/how-to-plot-roc-curve-in-python
 
 
@@ -33,7 +34,7 @@ def f1ScoreMetric(y_test, y_pred):
     return f1_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred))
 
 
-def kfoldMetric(cv, clf, metric, X, y, posVal):
+def kfoldMetric(cv, clf, metric, X, y):
     stringResultList = []
     clfName = clf.__class__.__name__
     if "accuracy" in metric:
@@ -78,89 +79,49 @@ def kfoldMetric(cv, clf, metric, X, y, posVal):
             "recall_macro: %.3f (%.3f)" % (mean(recall_macro), std(recall_macro))
         )
     if "rocauc" in metric:
-        """
-        X = pd.DataFrame(X)
-        y = pd.DataFrame(y)
-
-        n_classes = np.unique(y)
-
-        fpr = dict()
-        tpr = dict()
-        roc_auc = dict()
-
-        for train, test in cv.split(X, y):
-
-            probas_ = clf.fit(X[train], y[train]).predict_proba(X[test])
-            for i in range(n_classes):
-                fpr[i], tpr[i], t = roc_curve(y[test], probas_[:, 1])
-                print(fpr[i], tpr[i])
-                roc_auc[i] = auc(fpr[i], tpr[i])
-        """
-        stringResultList.append("positive Label: ", posVal)
         tprs = []
         aucs = []
         mean_fpr = np.linspace(0, 1, 100)
-        plt.figure(figsize=(10, 10))
-        i = 0
+        i = 1
         for train, test in cv.split(X, y):
-            probas_ = clf.fit(X[train], y[train]).predict_proba(X[test])
-            # Compute ROC curve and area the curve
-            fpr, tpr, thresholds = roc_curve(
-                y[test], probas_[:, 1], pos_label=int(posVal)
-            )
-
+            prediction = clf.fit(X[train], y[train]).predict_proba(X[test])
+            fpr, tpr, t = roc_curve(y[test], prediction[:, 1])
             tprs.append(interp(mean_fpr, fpr, tpr))
-            tprs[-1][0] = 0.0
             roc_auc = auc(fpr, tpr)
             aucs.append(roc_auc)
             plt.plot(
                 fpr,
                 tpr,
-                lw=1,
+                lw=2,
                 alpha=0.3,
                 label="ROC fold %d (AUC = %0.2f)" % (i, roc_auc),
             )
-
-            i += 1
-        plt.plot(
-            [0, 1], [0, 1], linestyle="--", lw=2, color="r", label="Chance", alpha=0.8
-        )
+            i = i + 1
+        plt.plot([0, 1], [0, 1], linestyle="--", lw=2, color="black")
         mean_tpr = np.mean(tprs, axis=0)
-        mean_tpr[-1] = 1.0
         mean_auc = auc(mean_fpr, mean_tpr)
-        std_auc = np.std(aucs)
         plt.plot(
             mean_fpr,
             mean_tpr,
-            color="b",
-            label=r"Mean ROC (AUC = %0.2f $\pm$ %0.2f)" % (mean_auc, std_auc),
+            color="blue",
+            label=r"Mean ROC (AUC = %0.2f )" % (mean_auc),
             lw=2,
-            alpha=0.8,
+            alpha=1,
         )
 
-        std_tpr = np.std(tprs, axis=0)
-        tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
-        tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
-        plt.fill_between(
-            mean_fpr,
-            tprs_lower,
-            tprs_upper,
-            color="grey",
-            alpha=0.2,
-            label=r"$\pm$ 1 std. dev.",
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("ROC_Kfold_" + str(clf.__class__.__name__))
+        plt.legend(loc="lower right")
+        plt.text(0.32, 0.7, "More accurate area", fontsize=12)
+        plt.text(0.63, 0.4, "Less accurate area", fontsize=12)
+        path = (
+            os.getcwd()
+            + "/python/results/rocCurve/Kfold_rocCurve_"
+            + str(clf.__class__.__name__)
+            + ".png"
         )
-
-        plt.xlim([-0.01, 1.01])
-        plt.ylim([-0.01, 1.01])
-        plt.xlabel("False Positive Rate", fontsize=18)
-        plt.ylabel("True Positive Rate", fontsize=18)
-        plt.title("Cross-Validation ROC of " + clfName, fontsize=18)
-        plt.legend(loc="lower right", prop={"size": 15})
-
-        path = Path(__file__).parent.absolute()
-        strFile = str(path) + "/results" + "/rocCurve.png"
-        plt.savefig(strFile)
-        plt.show()
+        plt.savefig(path)
     return stringResultList
 
 
@@ -177,8 +138,6 @@ def metricExamine(metriclist, y_test, y_pred):
 
     if "f1_score" in metriclist:
         temporalList.append(f1ScoreMetric(y_test, y_pred))
-
-    # if "rocauc" in metriclist:
 
     return temporalList
 

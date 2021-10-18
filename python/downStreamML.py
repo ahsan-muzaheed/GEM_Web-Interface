@@ -1,6 +1,7 @@
 import json
 import os
 import numpy as np
+from metricFuncs import *
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -13,12 +14,9 @@ from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
-from sklearn import metrics
-from sklearn import preprocessing
 from numpy import mean
 from numpy import std
 from txtHandler import *
-from metric import *
 
 
 # import pandas as pd
@@ -62,6 +60,8 @@ def kfoldHandler(clf, kval, dataSet, metric, posVal):
     stringResultList.append("Output from downstrem ML")
     stringResultList.append("------------------------")
     stringResultList.append("Method: Kfold")
+    stringResultList.append("------------------------")
+    stringResultList.append("Classifier  : " + str(clf.__class__.__name__))
     stringResultList.append("Kvalue for Kfold: " + str(kval))
     X = dataSet[:, :-1]
     y = dataSet[:, -1:].ravel()
@@ -71,24 +71,92 @@ def kfoldHandler(clf, kval, dataSet, metric, posVal):
 
     cv = KFold(n_splits=kval, random_state=1, shuffle=True)
 
-    # evaluate model
-    if posVal == "":
-        posVal = 1
-    temporalResultList = kfoldMetric(cv, clf, metric, X, y, posVal)
+    temporalResultList = kfoldMetric(cv, clf, metric, X, y)
+
     stringResultList = stringResultList + temporalResultList
-    accuracy = cross_val_score(clf, X, y, scoring="accuracy", cv=cv, n_jobs=-1)
+    # accuracy = cross_val_score(clf, X, y, scoring="accuracy", cv=cv, n_jobs=-1)
     print(stringResultList)
     # report performance
 
     # print("Accuracy: %.3f (%.3f)" % (mean(accuracy), std(accuracy)))
     # print("precision:", precision)
     # return mean(accuracy), std(accuracy)
-    return mean(accuracy), std(accuracy), stringResultList
+    return stringResultList
 
 
 def classGetter(y):
 
     return list(set(y.ravel()))
+
+
+def fprtprCalulator(clf, X_test, y_test):
+
+    r_probs = [0 for _ in range(len(y_test))]
+    clf_probs = clf.predict_proba(X_test)
+
+    # Keep positive outcome
+    clf_probs = clf_probs[:, 1]
+
+    # Calculate AUROC
+    r_auc = roc_auc_score(y_test, r_probs)
+    clf_auc = roc_auc_score(y_test, clf_probs)
+
+    # Print AUROC Score
+    # print("Random (chance) Prediction: AUROC = %.3f" % (r_auc))
+    # print(str(clf.__class__.__name__) + " AUROC = %.3f" % (clf_auc))
+
+    # Calculate ROC curve
+    r_fpr, r_tpr, _ = roc_curve(y_test, r_probs)
+    clf_fpr, clf_tpr, _ = roc_curve(y_test, clf_probs)
+
+    return clf_fpr, clf_tpr, r_fpr, r_tpr, r_auc, clf_auc
+
+
+def plottingROC(clf, clf_fpr, clf_tpr, r_fpr, r_tpr, r_auc, clf_auc, methodName):
+
+    # Plot the ROC curve
+    plt.plot(
+        r_fpr,
+        r_tpr,
+        linestyle="--",
+        label="Random Prediction (AUROC = %0.3f)" % (r_auc),
+    )
+    plt.plot(
+        clf_fpr,
+        clf_tpr,
+        marker=".",
+        label=str(clf.__class__.__name__) + " (AUROC = %0.3f" % (clf_auc),
+    )
+
+    # title
+    plt.title("ROC Curve for " + str(clf.__class__.__name__))
+
+    # Axis labels
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+
+    # Show legend
+
+    plt.legend()
+
+    nameTag = 0
+    path = (
+        os.getcwd()
+        + "/python/results/rocCurve/"
+        + methodName
+        + "_rocCurve_"
+        + str(clf.__class__.__name__)
+        + ".png"
+    )
+    plt.savefig(path)
+
+    # plt.show()
+
+
+def roc_curve_processor(clf, X_test, y_test, methodName):
+
+    fprVal, tprVal, r_fpr, r_tpr, r_auc, clf_auc = fprtprCalulator(clf, X_test, y_test)
+    plottingROC(clf, fprVal, tprVal, r_fpr, r_tpr, r_auc, clf_auc, methodName)
 
 
 def randomSamplingHandler(clf, trainRatio, numOfIter, dataSet, metric, posVal):
@@ -122,101 +190,17 @@ def randomSamplingHandler(clf, trainRatio, numOfIter, dataSet, metric, posVal):
         clf.fit(X_train, y_train)
         stringResultList.append(("Train ratio : " + str(trainRatio) + "% Done."))
         stringResultList.append(("------------------------"))
-
         y_pred = clf.predict(X_test)
+
         if "rocauc" in metric:
-            """
-            clfName = clf.__class__.__name__
-            y_score = clf.fit(X_train, y_train).decision_function(X_test)
-            # probas_ = clf.fit(X_train, y_train).predict_proba(X_test)
-            tprs = []
-            aucs = []
+            methodName = "randomSampling"
+            roc_curve_processor(clf, X_test, y_test, methodName)
 
-            if posVal == "":
-                posVal = 1
-            for j in range(n_classes):
-
-                fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=int(posVal))
-
-                tprs.append(interp(mean_fpr, fpr, tpr))
-                tprs[-1][0] = 0.0
-                roc_auc = auc(fpr, tpr)
-                aucs.append(roc_auc)
-                plt.plot(
-                    fpr,
-                    tpr,
-                    lw=1,
-                    alpha=0.3,
-                    label="ROC fold %d (AUC = %0.2f)" % (i, roc_auc),
-                )
-                plt.plot(
-                    [0, 1],
-                    [0, 1],
-                    linestyle="--",
-                    lw=2,
-                    color="r",
-                    label="Chance",
-                    alpha=0.8,
-                )
-            mean_tpr = np.mean(tprs, axis=0)
-            mean_tpr[-1] = 1.0
-            mean_auc = auc(mean_fpr, mean_tpr)
-            std_auc = np.std(aucs)
-            plt.plot(
-                mean_fpr,
-                mean_tpr,
-                color="b",
-                label=r"Mean ROC (AUC = %0.2f $\pm$ %0.2f)" % (mean_auc, std_auc),
-                lw=2,
-                alpha=0.8,
-            )
-
-            std_tpr = np.std(tprs, axis=0)
-            tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
-            tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
-            plt.fill_between(
-                mean_fpr,
-                tprs_lower,
-                tprs_upper,
-                color="grey",
-                alpha=0.2,
-                label=r"$\pm$ 1 std. dev.",
-            )
-
-            plt.xlim([-0.01, 1.01])
-            plt.ylim([-0.01, 1.01])
-            plt.xlabel("False Positive Rate", fontsize=18)
-            plt.ylabel("True Positive Rate", fontsize=18)
-            plt.title("Cross-Validation ROC of " + clfName, fontsize=18)
-            plt.legend(loc="lower right", prop={"size": 15})
-
-            path = Path(__file__).parent.absolute()
-            strFile = str(path) + "/results" + "/rocCurve.png"
-            plt.savefig(strFile)
-            plt.show()
-            """
-        # print(y_test)
-        # print("y_pred", y_pred)
     temporalList = metricExamine(metric, y_test, y_pred)
 
     # Accumulate each metric values to dictionary
     for j in range(len(temporalList)):
         temporalDict[metric[j]].append(temporalList[j])
-
-    # Compute ROC curve and ROC area for each class
-    # probas_ = clf.fit(X_train, y_train).predict_proba(X_test)
-    ##fpr = dict()
-    # tpr = dict()
-    # roc_auc = dict()
-    """
-        for i in range(n_classes):
-            fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
-            roc_auc[i] = auc(fpr[i], tpr[i])
-
-        # Compute micro-average ROC curve and ROC area
-        fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
-        roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-    """
 
     # print(temporalDict)
     values = temporalDict.values()
@@ -228,9 +212,10 @@ def randomSamplingHandler(clf, trainRatio, numOfIter, dataSet, metric, posVal):
     # print("after:", temporalDict)
 
     for k, v in temporalDict.items():
-        stringResultList.append(
-            (str(k) + ": " + "Average: " + str(v[0]) + " Std: " + str(v[1]))
-        )
+        if k != "rocauc":
+            stringResultList.append(
+                (str(k) + ": " + "Average: " + str(v[0]) + " Std: " + str(v[1]))
+            )
 
     return stringResultList
     # for y in range(2):
@@ -267,6 +252,11 @@ def holdoutHandler(clf, trainRatio, X_train, X_test, y_train, y_test, metric):
     # print("y_test: ", y_test)
     # print("y_pred: ", y_pred)
     temporalList = metricExamine(metric, y_test, y_pred)
+
+    if "rocauc" in metric:
+        roc_curve_processor(clf, X_test, y_test, "holdout")
+        metric.remove("rocauc")
+
     k = 0
     for i in metric:
         stringResultList.append(i + " : " + str(temporalList[k]))
@@ -292,12 +282,17 @@ def supervisedHandler(dataSet, jsonDict, metric):
     if jsonDict["classifier"] == "logisticRegression":
         solver = jsonDict["solver"]
         cvalue = float(jsonDict["Cvalforlogistic"])
-        clf = LogisticRegression(solver=solver, C=cvalue, random_state=0)
+        clf = LogisticRegression(solver=solver, C=cvalue)
     elif jsonDict["classifier"] == "SVM":
         CvalForSVM = jsonDict["CvalForSVM"]
         gammaForSVM = jsonDict["gammaForSVM"]
         kernelForSVM = jsonDict["kernelForSVM"]
-        clf = SVC(kernel=kernelForSVM, C=float(CvalForSVM), gamma=gammaForSVM)
+        clf = SVC(
+            kernel=kernelForSVM,
+            C=float(CvalForSVM),
+            gamma=gammaForSVM,
+            probability=True,
+        )
 
     elif jsonDict["classifier"] == "KNN":
         nForKNN = jsonDict["nForKNN"]
@@ -342,7 +337,7 @@ def supervisedHandler(dataSet, jsonDict, metric):
             )
         # kfold
         elif jsonDict["splitMethod"] == "kfold":
-            mean, std, stringResultList = kfoldHandler(
+            stringResultList = kfoldHandler(
                 clf,
                 int(jsonDict["kfoldValue"]),
                 dataSet,
@@ -433,6 +428,11 @@ jsonDict = jsonToDict(sys.argv[1])
 
 # Read numpy array dataset
 dataSet = readData()
+
+# In the case where a user chose "All" option
+if "all" in jsonDict["metric"]:
+    jsonDict["metric"].remove("all")
+    # print(jsonDict["metric"])
 
 # Execute supervised machine learning algos
 if jsonDict["learningType"] == "supervised":

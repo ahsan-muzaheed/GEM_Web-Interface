@@ -22,6 +22,7 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 // Static assets
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "python", "results", "rocCurve")));
 
 // Page Routings
 app.use(ladningRoutes);
