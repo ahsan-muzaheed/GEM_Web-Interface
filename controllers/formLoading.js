@@ -142,6 +142,7 @@ exports.getResultPage = (req, res, next) => {
   console.log("result page called");
 
   let resultData = fileInput.readResultTxt("result", ".txt");
+
   let resultVal = "";
   resultData.then((result) => {
     let htmlResult =
@@ -149,10 +150,32 @@ exports.getResultPage = (req, res, next) => {
       result.toString("utf8").replace(/\n/g, "<br />") +
       "</pre>";
     console.log(result.toString("utf8"));
+    let method = result.toString("utf8").split("\n")[3].split(" ")[1];
+    let model = result.toString("utf8").split("\n")[5].split(/\s+/)[2];
+    if (model == "LogisticRegression()") model = "LogisticRegression";
+    if (model == "SVC(probability=True)") model = "SVC";
+    if (model == "KNeighborsClassifier()") model = "KNeighborsClassifier";
+    if (model == "DecisionTreeClassifier()") model = "DecisionTreeClassifier";
+    console.log("model: ", model);
+    console.log("method: ", method);
     resultVal = htmlResult;
+
+    let imagefile = [];
+    fs.readdirSync(
+      path.join(__dirname, "..", "python/results/rocCurve")
+    ).forEach((file) => {
+      if (file.slice(-3) == "png") {
+        imagefile.push(file);
+      }
+    });
+    console.log(imagefile);
+
     res.render("result", {
       pageTitle: "result",
       result: resultVal,
+      graph: imagefile,
+      method: method,
+      model: model,
     });
   });
   // res.render("result", {
