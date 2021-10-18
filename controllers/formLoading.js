@@ -41,6 +41,7 @@ exports.getUploadResultPage = (req, res, next) => {
 exports.postUploadResultPage = (req, res, next) => {
   console.log(req.body);
   let posVal = req.body["posVal"];
+
   if (req.body["binarize"] === "yes") {
     // binarize label.npy
     const { spawn } = require("child_process");
