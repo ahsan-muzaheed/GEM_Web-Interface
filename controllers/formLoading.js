@@ -78,11 +78,11 @@ exports.getGraphEmbeddingPage = (req, res, next) => {
 
 exports.embeddingHandler = (req, res, next) => {
   // Call embedding algorithm here
-  console.log(req.body.embeddingMethod);
-  console.log(req.body.dimension);
-
+  console.log(req.body);
   // Laplacian
   if (req.body.embeddingMethod == "Laplacian") {
+    console.log(req.body.embeddingMethod);
+    console.log(req.body.dimension);
     const { spawn } = require("child_process");
     const dimension = req.body.dimension;
     const ls = spawn("python3", ["python/Laplacian.py", dimension]);
@@ -104,9 +104,31 @@ exports.embeddingHandler = (req, res, next) => {
       //process.exit();
       res.redirect("/downStreamML");
     });
-  }
+  } else if (req.body.embeddingMethod == "GAT") {
+    let param = JSON.stringify(req.body);
+    //const { spawn } = require("child_process");
+    //const ls = spawn("python3", ["python/GAT.py", param]);
+    const { spawnSync } = require("child_process");
+    const ls = spawnSync("python3", ["python/GAT.py", param]);
+    console.log("stdout here: \n" + ls.stdout);
+    // ls.stdout.on("data", (data) => {
+    //   console.log(`stdout: ${data}`);
+    // });
 
-  //res.redirect("/downStreamML");
+    // ls.stderr.on("data", (data) => {
+    //   console.error(`stderr: ${data}`);
+    // });
+
+    // ls.on("close", (code) => {
+    //   console.log("GAT called");
+
+    //   console.log(`graph embedding child process exited with code ${code}`);
+    //   res.redirect("/downStreamML");
+    // });
+    res.redirect("/result");
+  } else {
+    res.redirect("/downStreamML");
+  }
 };
 
 exports.getDownStreamMLPage = (req, res, next) => {
