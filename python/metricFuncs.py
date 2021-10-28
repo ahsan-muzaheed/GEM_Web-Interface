@@ -143,12 +143,13 @@ def metricExamine(metriclist, y_test, y_pred):
 
 
 def randIndex(y_true, y_pred):
+
     return rand_score(y_true, y_pred)
 
 
 def NMI(y_true, y_pred):
-    print(y_true[:300])
-    print(y_pred[:300])
+    # print("y_true", y_true[:300])
+    # print("y_pred", y_pred[:300])
     return normalized_mutual_info_score(y_true, y_pred)
 
 

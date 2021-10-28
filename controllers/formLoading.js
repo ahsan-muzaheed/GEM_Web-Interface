@@ -44,23 +44,42 @@ exports.postUploadResultPage = (req, res, next) => {
 
   if (req.body["binarize"] === "yes") {
     // binarize label.npy
-    const { spawn } = require("child_process");
-    const ls = spawn("python3", ["python/binarize.py", posVal]);
+    const { spawnSync } = require("child_process");
+    const ls = spawnSync("python3", ["python/binarize.py", posVal]);
 
-    ls.stdout.on("data", (data) => {
-      console.log(`stdout: ${data}`);
-    });
+    // ls.stdout.on("data", (data) => {
+    //   console.log(`stdout: ${data}`);
+    // });
 
-    ls.stderr.on("data", (data) => {
-      console.error(`stderr: ${data}`);
-    });
+    // ls.stderr.on("data", (data) => {
+    //   console.error(`stderr: ${data}`);
+    // });
 
-    ls.on("close", (code) => {
-      res.redirect("graphEmbedding");
-    });
+    // ls.on("close", (code) => {
+    //   //res.redirect("graphEmbedding");
+    //   //res.render("graphEmbedding", { result: htmlResult });
+    // });
   } else {
     res.redirect("graphEmbedding");
   }
+
+  let resultData = fileInput.readResultTxt("binarizedResult", ".txt");
+
+  let resultVal = "";
+  resultData.then((result) => {
+    let htmlResult =
+      '<div id="binarizedContent"><pre>' +
+      result.toString("utf8").replace(/\n/g, "<br />") +
+      "</pre>";
+    //console.log(result.toString("utf8"));
+    resultVal = htmlResult;
+    console.log("resultVal: ", resultVal);
+
+    res.render("graphEmbedding", {
+      pageTitle: "GraphEmbedding",
+      resultVal: resultVal,
+    });
+  });
 };
 
 exports.getLoadingPage = (req, res, next) => {
@@ -152,7 +171,8 @@ exports.downstreamHandler = (req, res, next) => {
     console.log(`stdout: ${data}`);
   });
   cp.stderr.on("data", (data) => {
-    console.error(`stderr: ${data}`);
+    //console.error(`stderr: ${data}`);
+    //res.redirect("/result");
   });
   cp.on("close", (code) => {
     console.log("downstream finished");
@@ -173,6 +193,7 @@ exports.getResultPage = (req, res, next) => {
       result.toString("utf8").replace(/\n/g, "<br />") +
       "</pre>";
     console.log(result.toString("utf8"));
+
     let method = result.toString("utf8").split("\n")[3].split(" ")[1];
     let model = result.toString("utf8").split("\n")[5].split(/\s+/)[2];
     if (model == "LogisticRegression()") model = "LogisticRegression";
@@ -181,6 +202,7 @@ exports.getResultPage = (req, res, next) => {
     if (model == "DecisionTreeClassifier()") model = "DecisionTreeClassifier";
     console.log("model: ", model);
     console.log("method: ", method);
+
     resultVal = htmlResult;
 
     let imagefile = [];
@@ -192,7 +214,6 @@ exports.getResultPage = (req, res, next) => {
       }
     });
     console.log(imagefile);
-
     res.render("result", {
       pageTitle: "result",
       result: resultVal,
@@ -201,8 +222,4 @@ exports.getResultPage = (req, res, next) => {
       model: model,
     });
   });
-  // res.render("result", {
-  //   pageTitle: "result",
-  //   result: resultVal,
-  // });
 };

@@ -1,0 +1,3 @@
+Binarized based on: [1, 3]
+numOfOne: 635
+numOfZero: 2073

@@ -154,7 +154,7 @@ def plottingROC(clf, clf_fpr, clf_tpr, r_fpr, r_tpr, r_auc, clf_auc, methodName)
 
 
 def roc_curve_processor(clf, X_test, y_test, methodName):
-
+    print("rocCurveCalled")
     fprVal, tprVal, r_fpr, r_tpr, r_auc, clf_auc = fprtprCalulator(clf, X_test, y_test)
     plottingROC(clf, fprVal, tprVal, r_fpr, r_tpr, r_auc, clf_auc, methodName)
 
@@ -274,6 +274,24 @@ def kmeansClustering():
     pass
 
 
+def numclusterChecker(y_pred):
+
+    flag = True
+    for x in range(len(y_pred)):
+        if x == len(y_pred) - 1:
+            break
+        if y_pred[x] != y_pred[x + 1]:
+            flag = False
+
+    if flag == True:
+        stringResult = []
+        stringResult.append("Output from downstrem ML")
+        stringResult.append("------------------------------------")
+        stringResult.append("Num of Cluster is 1. Set different parameters.")
+        txtAppender(stringResult)
+        # raise Exception("Num of Cluster is 1. Set different parameters")
+
+
 def supervisedHandler(dataSet, jsonDict, metric):
     header = ["Supervised Learning"]
     iteration = 0
@@ -382,7 +400,8 @@ def unsupervisedHandler(dataSet, jsonDict, metric):
         ).fit(X)
 
         y_pred = clustering.labels_
-
+        flag = numclusterChecker(y_pred)
+        print(flag)
         stringResult.append("Method: " + "K-Means")
 
     elif jsonDict["unsupervisedTaskType"] == "DBSCAN":
@@ -390,7 +409,9 @@ def unsupervisedHandler(dataSet, jsonDict, metric):
         minSamples = jsonDict["min_samples"]
         clustering = DBSCAN(eps=float(eps), min_samples=int(minSamples)).fit(X)
         y_pred = clustering.labels_
-
+        flag = numclusterChecker(y_pred)
+        print(flag)
+        stringResult.append("Method: " + "DBSCAN")
     else:  # Agglomerative
         cluster = jsonDict["n_clusters"]
         linkage = jsonDict["linkage"]
@@ -398,10 +419,14 @@ def unsupervisedHandler(dataSet, jsonDict, metric):
             n_clusters=int(cluster), linkage=linkage
         ).fit(X)
         y_pred = clustering.labels_
+        flag = numclusterChecker(y_pred)
+        print(flag)
+        stringResult.append("Method: " + "Agglomerative")
     # Metric Handling
     stringResult.append("------------------------------------")
     stringResult.append("Metric")
 
+    print("y_pred::", y_pred[:300])
     if "RandIndex" in metric:
 
         score = randIndex(y_true.ravel(), y_pred)
