@@ -1,39 +1,4 @@
 <%- include('includes/head.ejs') %>
-<script>
-    // function getSelectValue(v) {
-    //     //let selectedValue = document.getElementById("dropdown").value;
-    //     console.log(v);
-        
-        
-    //     if(v == "Laplacian"){
-    //     let idiv = document.createElement('div');
-    //     idiv.innerHTML="<div id='added'> <p>Hyperparameters for Laplacian <pre>(Embedding Dimensionality(2-256)</pre></p><input name='dimension' class='form-control input-sm' id='inputsm' type='text'></div>";
-    //     //document.getElementById('division').append(idiv);
-    //     //document.getElementsByClassName('formContent')[2].appendChild(idiv);
-    //     document.getElementById('btn').insertAdjacentHTML('beforebegin', idiv.innerHTML);
-    //     i = 1;
-    //     }
-
-    //     // Should be developed in the future
-    //     else if(v =="Locally Linear" || v=="Graph Factorization" || v=="HOPE" || v=="SDNE" || v=="node2vec"){
-    //             alert(
-    //                 "This method is still being developed!"
-    //             );
-    //             var elem = document.getElementById("added");
-    //             if(elem.parentNode){
-    //                 elem.parentNode.removeChild(elem);
-    //             }
-    //             else{
-    //                 console.log("This method is still being developed");
-    //             }
-                
-                
-                
-    //         }
-        
-
-    // }
-</script>
 
 </head>
 <body>
@@ -44,10 +9,11 @@
         <p> Graph Embedding</p>
         <hr>
         <h5>Configure the requirements for your graph embedding</h5>
+        <h6><%- resultVal %></h6>
     </div>
     
     
-
+    
 
     <form class='formContent' name="form" action="/embeddingHandler" method="POST">
        
