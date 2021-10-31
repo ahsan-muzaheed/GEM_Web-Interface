@@ -47,6 +47,23 @@ exports.postUploadResultPage = (req, res, next) => {
     const { spawnSync } = require("child_process");
     const ls = spawnSync("python3", ["python/binarize.py", posVal]);
 
+    let resultData = fileInput.readResultTxt("binarizedResult", ".txt");
+
+    let resultVal = "";
+    resultData.then((result) => {
+      let htmlResult =
+        '<div id="binarizedContent"><pre>' +
+        result.toString("utf8").replace(/\n/g, "<br />") +
+        "</pre>";
+      //console.log(result.toString("utf8"));
+      resultVal = htmlResult;
+      console.log("resultVal: ", resultVal);
+
+      res.render("graphEmbedding", {
+        pageTitle: "GraphEmbedding",
+        resultVal: resultVal,
+      });
+    });
     // ls.stdout.on("data", (data) => {
     //   console.log(`stdout: ${data}`);
     // });
@@ -60,26 +77,12 @@ exports.postUploadResultPage = (req, res, next) => {
     //   //res.render("graphEmbedding", { result: htmlResult });
     // });
   } else {
-    res.redirect("graphEmbedding");
-  }
-
-  let resultData = fileInput.readResultTxt("binarizedResult", ".txt");
-
-  let resultVal = "";
-  resultData.then((result) => {
-    let htmlResult =
-      '<div id="binarizedContent"><pre>' +
-      result.toString("utf8").replace(/\n/g, "<br />") +
-      "</pre>";
-    //console.log(result.toString("utf8"));
-    resultVal = htmlResult;
-    console.log("resultVal: ", resultVal);
-
+    //res.redirect("graphEmbedding");
     res.render("graphEmbedding", {
       pageTitle: "GraphEmbedding",
-      resultVal: resultVal,
+      resultVal: "",
     });
-  });
+  }
 };
 
 exports.getLoadingPage = (req, res, next) => {
@@ -92,6 +95,7 @@ exports.getLoadingPage = (req, res, next) => {
 exports.getGraphEmbeddingPage = (req, res, next) => {
   res.render("graphEmbedding", {
     pageTitle: "GraphEmbedding",
+    resultVal: "",
   });
 };
 
@@ -193,33 +197,46 @@ exports.getResultPage = (req, res, next) => {
       result.toString("utf8").replace(/\n/g, "<br />") +
       "</pre>";
     console.log(result.toString("utf8"));
+    //console.log(result.toString("utf8").split("\n").length);
+    //console.log(result.toString("utf8").split("\n"));
+    if (result.toString("utf8").split("\n")[0] == "GAT------") {
+      resultVal = htmlResult;
 
-    let method = result.toString("utf8").split("\n")[3].split(" ")[1];
-    let model = result.toString("utf8").split("\n")[5].split(/\s+/)[2];
-    if (model == "LogisticRegression()") model = "LogisticRegression";
-    if (model == "SVC(probability=True)") model = "SVC";
-    if (model == "KNeighborsClassifier()") model = "KNeighborsClassifier";
-    if (model == "DecisionTreeClassifier()") model = "DecisionTreeClassifier";
-    console.log("model: ", model);
-    console.log("method: ", method);
+      res.render("result", {
+        pageTitle: "result",
+        result: resultVal,
+        graph: [],
+        method: "",
+        model: "",
+      });
+    } else {
+      console.log("should've not come here");
+      let method = result.toString("utf8").split("\n")[3].split(" ")[1];
+      let model = result.toString("utf8").split("\n")[5].split(/\s+/)[2];
+      if (model == "LogisticRegression()") model = "LogisticRegression";
+      if (model == "SVC(probability=True)") model = "SVC";
+      if (model == "KNeighborsClassifier()") model = "KNeighborsClassifier";
+      if (model == "DecisionTreeClassifier()") model = "DecisionTreeClassifier";
+      console.log("model: ", model);
+      console.log("method: ", method);
 
-    resultVal = htmlResult;
-
-    let imagefile = [];
-    fs.readdirSync(
-      path.join(__dirname, "..", "python/results/rocCurve")
-    ).forEach((file) => {
-      if (file.slice(-3) == "png") {
-        imagefile.push(file);
-      }
-    });
-    console.log(imagefile);
-    res.render("result", {
-      pageTitle: "result",
-      result: resultVal,
-      graph: imagefile,
-      method: method,
-      model: model,
-    });
+      resultVal = htmlResult;
+      let imagefile = [];
+      fs.readdirSync(
+        path.join(__dirname, "..", "python/results/rocCurve")
+      ).forEach((file) => {
+        if (file.slice(-3) == "png") {
+          imagefile.push(file);
+        }
+      });
+      console.log(imagefile);
+      res.render("result", {
+        pageTitle: "result",
+        result: resultVal,
+        graph: imagefile,
+        method: method,
+        model: model,
+      });
+    }
   });
 };

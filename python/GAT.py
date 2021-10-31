@@ -25,6 +25,14 @@ def resultWrite(content):
         myfile.write(content + "\n")
 
 
+# def txtCreate():
+#     print("txt creater works here")
+#     targetPath = os.path.join(os.getcwd(), "python/results/result.txt")
+
+#     with open(targetPath, "w+") as myfile:
+#         myfile.write("GAT-----" + "\n")
+
+
 def stringToInt(listInput):
     for i in range(len(listInput)):
         listInput[i] = int(listInput[i])
@@ -170,6 +178,7 @@ def get_main_loop(
     def main_loop(phase, epoch=0):
 
         global BEST_VAL_ACC, BEST_VAL_LOSS, PATIENCE_CNT, writer
+        targetPath = os.path.join(os.getcwd(), "python/results/result.txt")
 
         # Certain modules behave differently depending on whether we're training the model or not.
         # e.g. nn.Dropout - we only want to drop model weights during the training.
@@ -368,7 +377,7 @@ def train_gat(config):
 
     # THIS IS THE CORE OF THE TRAINING (we'll define it in a minute)
     # The decorator function makes things cleaner since there is a lot of redundancy between the train and val loops
-    file1 = open(os.path.join(os.getcwd(), "python", "results", "result.txt"), "w")
+
     main_loop = get_main_loop(
         config,
         gat,
@@ -391,6 +400,9 @@ def train_gat(config):
     ]  # reset vars used for early stopping
 
     # Step 4: Start the training procedure
+    targetPath = os.path.join(os.getcwd(), "python/results/result.txt")
+    with open(targetPath, "w") as myfile:
+        myfile.write("GAT------" + "\n")
     for epoch in range(config["num_of_epochs"]):
 
         # Training loop
@@ -500,6 +512,9 @@ def dictTrimmer(jsonDict):
 
 
 if __name__ == "__main__":
+
     jsonDict = jsonToDict(sys.argv[1])
+
     training_config = dictTrimmer(jsonDict)
+
     train_gat(training_config)
