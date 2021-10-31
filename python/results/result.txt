@@ -1,22 +1,9 @@
-Supervised Learning
+Unsupervised Learning
 Output from downstrem ML
-------------------------
-Method: randomSampling
-------------------------
-Classifier  : SVC(probability=True)
-------------------------
-Num of Trials: 5
-Train ratio : 70% Done.
-------------------------
-Train ratio : 70% Done.
-------------------------
-Train ratio : 70% Done.
-------------------------
-Train ratio : 70% Done.
-------------------------
-Train ratio : 70% Done.
-------------------------
-accuracy: Average: 0.7539975399753998 Std: 0.0
-precision: Average: 0.8146639912761644 Std: 0.0
-recall: Average: 0.7539975399753998 Std: 0.0
-f1_score: Average: 0.6507078498434525 Std: 0.0
+------------------------------------
+Method: Agglomerative
+------------------------------------
+Metric
+Rand Score: 0.6792617094801541
+NMI Score: 0.004613751309908475
+Silhouette Score: 0.9372845323897582
