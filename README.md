@@ -95,7 +95,7 @@ The downstrem ML page provides machine learning algorithm options that we may ap
 * KNN
 * Decision Tree
 * Split Method 
-  - Hodlout
+  - Holdout
   - K-fold Validation
   - Random Sampling (Taking Average of num of trials)
 * Metric
