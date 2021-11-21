@@ -4,6 +4,7 @@ This repo contains a Node.js - Python implementation of Graph Embedding Methods(
 ## Table of contents
 * [What is Graph Embedding Methods (GEM)?](#What-is-Graph-Embedding-Methods-(GEM)?)
 * [Setup](#Setup)
+* [Test Dataset](#test-dataset)
 * [Usage](#usage)
 * [Future Work](#future-work)
 ## What is Graph Embedding Methods (GEM)?
