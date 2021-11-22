@@ -4,6 +4,7 @@ This repo contains a Node.js - Python implementation of Graph Embedding Methods(
 ## Table of contents
 * [What is Graph Embedding Methods (GEM)?](#What-is-Graph-Embedding-Methods-(GEM)?)
 * [Setup](#Setup)
+* [Test Dataset](#test-dataset)
 * [Usage](#usage)
 * [Future Work](#future-work)
 ## What is Graph Embedding Methods (GEM)?
@@ -105,6 +106,7 @@ The downstrem ML page provides machine learning algorithm options that we may ap
 </p>
 
 >Supervised Learning
+
 * [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
 * [SVM](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
 * [KNN](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
@@ -112,6 +114,7 @@ The downstrem ML page provides machine learning algorithm options that we may ap
 * Split Method
   - Holdout
   - [K-fold Validation](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.KFold.html)
+
   - Random Sampling (Taking Average of num of trials)
 * Metric
   - [Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html)
