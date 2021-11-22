@@ -1,5 +1,5 @@
 # GEM_Web-Interface
-This repo contains a Node.js - Python implementation of Graph Embedding Methods(GEM) that allows users to experiment GEM algorithms and downstream ML tasks in a Web environment.
+This repo contains a Node.js - Python implementation of Graph Embedding Methods(GEM) that allows users to experiment GEM algorithms and downstream machine learning tasks in a Web environment.
 
 ## Table of contents
 * [What is Graph Embedding Methods (GEM)?](#What-is-Graph-Embedding-Methods-(GEM)?)
@@ -30,7 +30,7 @@ The GEM is about approaches to transform the graph data into vectors in latent s
 
 ## Setup
 1. `git clone https://github.com/JunyongLee1217/GEM_Web-Interface`
-2. Make sure you have recent version of node and Python3
+2. Make sure you have recent version of Node.js and Python3
 3. `pip3 install -r requirements.txt`
 4. `npm init`
 5. `npm install`
@@ -84,7 +84,7 @@ You can choose the preferred graph embedding methods that you need.
 
 * [Laplacian Eigenmaps](https://proceedings.neurips.cc/paper/2001/file/f106b7f99d2cb30c3db1c3cc0fde9ccb-Paper.pdf)
 * [Graph Attention Networks(GAT)](https://arxiv.org/pdf/1710.10903.pdf) 
-(re-implentation of [this](https://github.com/gordicaleksa/pytorch-GAT) repository.
+(re-implentation of [this](https://github.com/gordicaleksa/pytorch-GAT) repository)
 * Locally Linear Embeeding(LLE)
 * Graph Factorization
 * HOPE
@@ -92,7 +92,7 @@ You can choose the preferred graph embedding methods that you need.
 * node2vec
 
 
-So far, Laplacian Eigenmaps and GAT have been integrated. For GAT, it currently provides direct classification. The 'only for embedding' option is under development. The
+So far, Laplacian Eigenmaps and GAT have been integrated. For GAT, it currently provides direct classification. The 'only for embedding' option is under development.
 
 --------------------------------
 
@@ -105,28 +105,28 @@ The downstrem ML page provides machine learning algorithm options that we may ap
 </p>
 
 >Supervised Learning
-* Logistic Regression
-* SVM
-* KNN
-* Decision Tree
-* Split Method 
-  - Hodlout
-  - K-fold Validation
+* [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
+* [SVM](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
+* [KNN](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+* [Decision Tree](https://scikit-learn.org/stable/modules/tree.html)
+* Split Method
+  - Holdout
+  - [K-fold Validation](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.KFold.html)
   - Random Sampling (Taking Average of num of trials)
 * Metric
-  - Accuracy
-  - Precision
-  - Recall
-  - F1 Score
-  - ROCAUC curve (only for binarized dataset)
+  - [Accuracy](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html)
+  - [Precision](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html)
+  - [Recall](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html)
+  - [F1 Score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html)
+  - [ROCAUC curve (only for binarized dataset)](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html)
 > Unsupervised learning
-* K-Means
-* DBSCAN
-* Agglomerative
+* [K-Means](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+* [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html)
+* [Agglomerative](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html)
 * Metric
-  - Rand Index
-  - Normalized Mutual Information(NMI)
-  - Silhouette Coefficient
+  - [Rand Index](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.adjusted_rand_score.html)
+  - [Normalized Mutual Information(NMI)](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.normalized_mutual_info_score.html)
+  - [Silhouette Coefficient](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html)
 
 
 ### Result Page
