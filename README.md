@@ -1,5 +1,5 @@
 # GEM_Web-Interface
-This repo contains a Node.js - Python implementation of Graph Embedding Methods(GEM) that allows users to experiment GEM algorithms and downstream machine learning tasks in a Web environment.
+This repo contains a Node.js - Python implementation of Graph Embedding Methods(GEM) that allows users to experiment GEM algorithms and downstream machine learning tasks in web environment.
 
 ## Table of contents
 * [What is Graph Embedding Methods (GEM)?](#What-is-Graph-Embedding-Methods-(GEM)?)
