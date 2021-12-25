@@ -37,6 +37,12 @@ The GEM is about approaches to transform the graph data into vectors in latent s
 5. `npm install`
 6. `npm start`
 
+
+## High-Level architecture
+
+<img src= "readmepics/1highlevelarch.jpg" style=;>
+
+
 ## Test Dataset
 
 Cora dataset is one of 'Hello World' datasets in graph machine learning. The data can be found in 'inputData' folder.
