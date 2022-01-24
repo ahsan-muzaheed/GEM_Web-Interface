@@ -15,6 +15,7 @@ const downStreamML = require("./routes/downStreamML");
 const result = require("./routes/result");
 const embeddingHandler = require("./routes/embeddingHandler");
 
+const PORT = process.env.PORT || 8080;
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -33,6 +34,6 @@ app.use(embeddingHandler);
 app.use(downStreamML);
 app.use(result);
 
-app.listen(8080, () => {
-  console.log("server started on 8080");
+app.listen(PORT, () => {
+  console.log(`server started on ${PORT}`);
 });
