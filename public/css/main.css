@@ -111,3 +111,12 @@ select.form-select {
   background-color: #00695c;
   color: white;
 }
+
+#resultcontent {
+  position: absolute;
+  font-size: 20px;
+  top: 30rem;
+
+  right: 15rem;
+  left: 18rem;
+}

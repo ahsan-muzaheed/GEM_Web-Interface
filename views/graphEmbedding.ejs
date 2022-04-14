@@ -1,39 +1,5 @@
 <%- include('includes/head.ejs') %>
-<script>
-    function getSelectValue(v) {
-        //let selectedValue = document.getElementById("dropdown").value;
-        console.log(v);
-        
-        
-        if(v == "Laplacian"){
-        let idiv = document.createElement('div');
-        idiv.innerHTML="<div id='added'> <p>Hyperparameters for Laplacian <pre>(Embedding Dimensionality(2-256)</pre></p><input name='dimension' class='form-control input-sm' id='inputsm' type='text'></div>";
-        //document.getElementById('division').append(idiv);
-        //document.getElementsByClassName('formContent')[2].appendChild(idiv);
-        document.getElementById('btn').insertAdjacentHTML('beforebegin', idiv.innerHTML);
-        i = 1;
-        }
 
-        // Should be developed in the future
-        else if(v =="Locally Linear" || v=="Graph Factorization" || v=="HOPE" || v=="SDNE" || v=="node2vec"){
-                alert(
-                    "This method is still being developed!"
-                );
-                var elem = document.getElementById("added");
-                if(elem.parentNode){
-                    elem.parentNode.removeChild(elem);
-                }
-                else{
-                    console.log("This method is still being developed");
-                }
-                
-                
-                
-            }
-        
-
-    }
-</script>
 </head>
 <body>
 
@@ -43,17 +9,19 @@
         <p> Graph Embedding</p>
         <hr>
         <h5>Configure the requirements for your graph embedding</h5>
+        <h6><%- resultVal %></h6>
     </div>
     
     
-
+    
 
     <form class='formContent' name="form" action="/embeddingHandler" method="POST">
        
         <p>Embedding Technique</p>
-        <select onchange="getSelectValue(value);" class="form-select" id="dropdown" aria-label="Default select example" style="width: 10rem;" name="embeddingMethod">
+        <select onchange="getSelectValue(value);" class="form-select" id="embeddingMethodDropDown" aria-label="Default select example" style="width: 10rem;" name="embeddingMethod">
             <option selected>Choose...</option>
             <option value="Laplacian">Laplacian</option>
+            <option value="GAT">Graph Attention Network (GAT)</option>
             <option value="Locally Linear">Locally Linear</option>
             <option value="Graph Factorization">Graph Factorization</option>
             <option value="HOPE">HOPE</option>
@@ -63,21 +31,137 @@
         
         <hr>
         
+        <!--Laplacian-->
+        <div id="lapDimension" style="display:none">
+            <label for="dimension">Laplacian Dimensionality(2-256)</label>
+            <input class="form-control" style="width: 15rem" type="text" id="dimension" name="dimension">
+        </div>
 
 
+        <!--GAT-->
+        <div class="row"id="gatParam" style="display: none; width:30rem;">
 
+            <label for="" style="font-size: large;margin-bottom: 3rem;">Training Arguments</label>
+            <div class="col">
+                <label for="">num_of_epochs</label>
+                <input class="form-control" style="width:10rem" type="int" value=10000 name="num_of_epochs">
+                
+                
+            </div>
+            <div class="col">
 
-        <!--If Laplacian is selected show specific <div>  -->
+                <label for="">Learning Rate</label>
+                <input class="form-control" style="width:10rem" type="float" value=5e-3 name="learning_rate">
+            </div>
+
+            <!-- Default radio -->
+            <div class="form-check">
+                <input
+                class="form-check-input"
+                type="radio"
+                name="should_test"
+                id="should_test1"
+                value="True"
+                checked
+                />
+                <label class="form-check-label" for="isDirect"> GAT for direct classificaton </label>
+            </div>
+            
+            <!-- Default checked radio -->
+            <div class="form-check">
+                <input
+                class="form-check-input"
+                type="radio"
+                name="should_test"
+                id="should_test2"
+                value="False"
+                />
+                <label class="form-check-label" for="fisDirect2"> GAT only for embedding (Still use downstreamML)</label>
+            </div>
+
+            
+        </div>
+
         
+        <div class="row" style="display: none; width:30rem;">
+            <hr>
+            <label for="" style="font-size: large;">Model Arguments</label>
+            <div class="col">
+                <label for="">num_of_layers</label>
+                <input class="form-control" style="width:10rem" value="2" type="int" name="num_of_layers">
+            </div>
+            <div class="col">
+                <label for="">num_heads_per_layer</label>
+                <input class="form-control" style="width:10rem" value="8,1" type="text" name="num_heads_per_layer">
+            </div>
+            <div class="col">
+                <label for="">num_features_per_layer</label>
+                <input class="form-control" style="width:10rem" value="1433,8,7" type="text" name="num_features_per_layer">
+            </div>
+            <div class="col">
+                <label for="add_skip_connection">add_skip_connection</label>
+                <select  class="form-select" id="add_skip_connection" aria-label="Default select example" name="add_skip_connection">
+                    <option selected value="False">False</option>
+                    <option value="True">True</option>
+                </select> 
+            </div>
+            <div class="col">
+                <label for="add_skip_connection">bias</label>
+                <select  class="form-select" id="bias" aria-label="Default select example"  name="bias">
+                    <option selected value="True">True</option>
+                    <option value="False">False</option>
+                </select> 
+            </div>
+            <div class="col">
+                <label for="">dropout(float)</label>
+                <input class="form-control" style="width:10rem" value="0.6" type="text" name="dropout">
+            </div>
+            <div class="col">
+                <label for="">Train Range(Default: 140)</label>
+                <input class="form-control" style="width:10rem" value="0,140" type="text" name="train_range">
+            </div>
+            <div class="col">
+                <label for="">Validation Range</label>
+                <input class="form-control" style="width:10rem" value="140,640" type="text" name="val_range">
+            </div>
+            <div class="col">
+                <label for="">Test Range</label>
+                <input class="form-control" style="width:10rem" value="1708,2708" type="text" name="test_range">
+            </div>
+        </div>
 
-        
 
 
+        <!--If Laplacian is selected show specific <div>  -->   
         <button id="btn" class="btn" style="position:relative; margin-left:100%; margin-bottom:3px;" type="submit">Submit</button>
 
 
     </form>
 
+
+    <script>
+
+        $(document).ready(function(){
+    
+            $("#embeddingMethodDropDown").change(function(){
+                $("#lapDimension").hide();
+                $(".row").hide();
+                let selectedVal = $("#embeddingMethodDropDown option:selected").text();
+
+                if(selectedVal == "Laplacian"){
+                    $("#lapDimension").show();
+                }
+                else if(selectedVal == "Graph Attention Network (GAT)"){
+                    $(".row").show();
+                }
+            })
+
+            // $('form-check-input').click(function() {
+            //     $('.form-check-input').not(this).prop('checked', false);
+            // });
+            
+        });
+    </script>
 </body>
 
 

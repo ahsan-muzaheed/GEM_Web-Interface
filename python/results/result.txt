@@ -1,0 +1,13 @@
+Supervised Learning
+Output from downstrem ML
+------------------------
+Method: Kfold
+------------------------
+Classifier  : KNeighborsClassifier
+Kvalue for Kfold: 5
+Accuracy: 0.861 (0.006)
+Precision_micro: 0.861 (0.006)
+f1_score_micro: 0.861 (0.006)
+f1_score_macro : 0.860 (0.007)
+recall_micro: 0.861 (0.006)
+recall_macro: 0.859 (0.007)

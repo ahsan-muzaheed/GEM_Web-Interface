@@ -1,3 +1,7 @@
+// GEM Web-Application
+// Written by Jun Yong Lee
+// NMSU
+
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -11,6 +15,7 @@ const downStreamML = require("./routes/downStreamML");
 const result = require("./routes/result");
 const embeddingHandler = require("./routes/embeddingHandler");
 
+const PORT = process.env.PORT || 8080;
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -18,6 +23,7 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 // Static assets
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "python", "results", "rocCurve")));
 
 // Page Routings
 app.use(ladningRoutes);
@@ -28,6 +34,6 @@ app.use(embeddingHandler);
 app.use(downStreamML);
 app.use(result);
 
-app.listen(8080, () => {
-  console.log("server started on 8080");
+app.listen(PORT, () => {
+  console.log(`server started on ${PORT}`);
 });

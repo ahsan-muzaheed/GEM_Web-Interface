@@ -12,15 +12,30 @@
                     <p> Upload Files</p>
                     <hr>
                 </div>
-                <form class="formContent">
+                <form class="formContent" method="post" action="/postUploadResultPage">
                     
-                    <div style="width: 9em;">
-                        <% let pageDataPrint = pageData.replace('\n', '<br/>')%> 
-                        <p><%- pageDataPrint %></p>
+                    
+                         
+                    <%- pageData %>
+                    
+
+                    <div class="row" id = "multiClassControl" style="display: none"> 
+                    
+                        <label for="binarize">Binarize: </label>
+                        <select  class="form-select" id="binarize" aria-label="Default select example" name="binarize">
+                            <option value="no" selected>No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+
 
                     </div>
 
-                        
+                    <div class="row" id="posVal"  style="display:none">
+
+                        <label for="posValue">Positive Label(comma separate for multiple positive labels):</label>
+                        <input class="form-control" style="width:10rem" type="text" name="posVal">
+                            
+                    </div>
                     
                     
                     <div style="float:left">
@@ -28,16 +43,33 @@
                     </div>
                     <div style="float:right">
                         <a href="/graphEmbedding">
-                            <button type="button" class="btn btn-primary btn-lg">Next</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Next</button>
                         </a>
                     </div>
                     
                 </form>
 
-
-
                 
-        
+                <script>
+                    $(document).ready(function(){
+
+                        if(parseInt("<%=numOfClass%>") > 2 ){
+                            $("#multiClassControl").show();
+                        }
+
+
+                        $("#binarize").change(function(){
+                            let selectedVal = $("#binarize option:selected").text();
+                            if(selectedVal == "Yes"){
+                                $("#posVal").show();
+                            }
+                            else{
+                                $("#posVal").hide();
+                            }
+                        })
+                    });
+
+                </script>
 
 
     

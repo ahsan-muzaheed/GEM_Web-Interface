@@ -1,0 +1,3 @@
+Binarized based on: [3, 4]
+numOfOne: 1244
+numOfZero: 1464
