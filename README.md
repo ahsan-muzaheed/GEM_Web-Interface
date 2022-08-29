@@ -1,3 +1,26 @@
+Installation:
+open cmd line window and type:
+npm install   
+
+it will proiduce node_modules folder.
+
+once node_modules folder produced you dont need to run this cmd again.
+![image](https://user-images.githubusercontent.com/28894635/187297084-5bb13318-c8ab-4544-b19a-c9bf227fe202.png)
+
+
+Lunching :
+once node_modulesproduced now system ready to be lunched.
+TO do that follow this:
+
+in cmd line type "npm start".
+ a black window will start
+
+![image](https://user-images.githubusercontent.com/28894635/187296837-ea9b84ae-b7ab-4791-8cd6-c4fedd2fee8e.png)
+
+For windows user a shortcut added which lubnch the system instatly :
+run.bat
+
+
 # GEM_Web-Interface
 This repo contains a Node.js - Python implementation of Graph Embedding Methods(GEM) that allows users to experiment GEM algorithms and downstream machine learning tasks in web environment.
 
